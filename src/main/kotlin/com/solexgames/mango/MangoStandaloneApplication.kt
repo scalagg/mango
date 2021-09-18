@@ -1,6 +1,7 @@
 package com.solexgames.mango
 
-import com.solexgames.mango.command.TicketAdminCommand
+import com.solexgames.mango.command.MangoAdminCommand
+import com.solexgames.mango.listener.UserListener
 import com.xenomachina.argparser.ArgParser
 import io.github.revxrsal.cub.jda.JDACommandHandler
 import net.dv8tion.jda.api.JDA
@@ -22,7 +23,9 @@ object MangoStandaloneApplication {
     fun main(args: Array<String>) {
         ArgParser(args).parseInto(::MangoArgs).let { mangoArgs ->
             this.client = JDABuilder.createDefault(mangoArgs.token)
-                .addEventListeners()
+                .addEventListeners(
+                    UserListener
+                )
                 .build()
 
             this.client.awaitReady().let {
@@ -34,7 +37,7 @@ object MangoStandaloneApplication {
                 )
 
                 commandHandler.registerCommand(
-                    TicketAdminCommand()
+                    MangoAdminCommand()
                 ); settings = mangoArgs
             }
         }
@@ -48,5 +51,6 @@ class MangoArgs(parser: ArgParser) {
     val secondary by parser.storing("--secondary", help = "Secondary Hex Color")
 
     val discordName by parser.storing("--name", help = "Discord Name")
+    val guild by parser.storing("--guild", help = "Discord Primary Guild")
 }
 
