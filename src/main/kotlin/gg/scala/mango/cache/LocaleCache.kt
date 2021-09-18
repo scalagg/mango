@@ -1,10 +1,10 @@
-package com.solexgames.mango.cache
+package gg.scala.mango.cache
 
-import com.solexgames.mango.locale.Locale
-import com.solexgames.mango.locale.impl.EnglishLocale
-import com.solexgames.mango.locale.impl.FrenchLocale
-import com.solexgames.mango.locale.impl.ItalianLocale
-import com.solexgames.mango.locale.impl.SpanishLocale
+import gg.scala.mango.locale.Locale
+import gg.scala.mango.locale.impl.EnglishLocale
+import gg.scala.mango.locale.impl.FrenchLocale
+import gg.scala.mango.locale.impl.ItalianLocale
+import gg.scala.mango.locale.impl.SpanishLocale
 import java.util.function.Predicate
 
 /**

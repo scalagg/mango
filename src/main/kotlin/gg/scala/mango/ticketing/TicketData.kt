@@ -1,6 +1,6 @@
-package com.solexgames.mango.ticketing
+package gg.scala.mango.ticketing
 
-import com.solexgames.mango.locale.Locale
+import gg.scala.mango.locale.Locale
 import net.dv8tion.jda.api.entities.TextChannel
 
 /**

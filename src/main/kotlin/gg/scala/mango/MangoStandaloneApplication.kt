@@ -1,12 +1,11 @@
-package com.solexgames.mango
+package gg.scala.mango
 
-import com.solexgames.mango.command.MangoAdminCommand
-import com.solexgames.mango.listener.UserListener
+import gg.scala.mango.command.MangoAdminCommand
+import gg.scala.mango.listener.UserListener
 import com.xenomachina.argparser.ArgParser
 import io.github.revxrsal.cub.jda.JDACommandHandler
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
-
 
 /**
  * @author GrowlyX
@@ -22,13 +21,13 @@ object MangoStandaloneApplication {
     @JvmStatic
     fun main(args: Array<String>) {
         ArgParser(args).parseInto(::MangoArgs).let { mangoArgs ->
-            this.client = JDABuilder.createDefault(mangoArgs.token)
+            client = JDABuilder.createDefault(mangoArgs.token)
                 .addEventListeners(
                     UserListener
                 )
                 .build()
 
-            this.client.awaitReady().let {
+            client.awaitReady().let {
                 commandHandler = JDACommandHandler.create(
                     it, JDACommandHandler.Settings.builder()
                         .prefix("-")

@@ -7,7 +7,7 @@ plugins {
 group 'com.solexgames'
 version '1.0-SNAPSHOT'
 
-mainClassName = 'com.solexgames.mango.MangoStandaloneApplication'
+mainClassName = 'gg.scala.mango.MangoStandaloneApplication'
 
 repositories {
     mavenCentral()

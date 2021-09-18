@@ -1,4 +1,4 @@
-package com.solexgames.mango.ticketing
+package gg.scala.mango.ticketing
 
 
 /**

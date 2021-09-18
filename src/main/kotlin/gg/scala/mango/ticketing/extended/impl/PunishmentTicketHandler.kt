@@ -1,8 +1,8 @@
-package com.solexgames.mango.ticketing.extended.impl
+package gg.scala.mango.ticketing.extended.impl
 
-import com.solexgames.mango.ticketing.TicketData
-import com.solexgames.mango.ticketing.extended.ExtendedTicketHandler
-import com.solexgames.mango.util.MangoUtil.sendMessage
+import gg.scala.mango.ticketing.TicketData
+import gg.scala.mango.ticketing.extended.ExtendedTicketHandler
+import gg.scala.mango.util.MangoUtil.sendMessage
 import net.dv8tion.jda.api.entities.Member
 
 /**

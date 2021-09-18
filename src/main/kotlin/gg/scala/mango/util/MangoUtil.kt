@@ -1,6 +1,6 @@
-package com.solexgames.mango.util
+package gg.scala.mango.util
 
-import com.solexgames.mango.MangoStandaloneApplication
+import gg.scala.mango.MangoStandaloneApplication
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.TextChannel
 import java.awt.Color

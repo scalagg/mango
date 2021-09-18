@@ -1,6 +1,6 @@
-package com.solexgames.mango.ticketing.extended
+package gg.scala.mango.ticketing.extended
 
-import com.solexgames.mango.ticketing.TicketData
+import gg.scala.mango.ticketing.TicketData
 import net.dv8tion.jda.api.entities.Member
 
 /**

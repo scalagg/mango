@@ -1,8 +1,8 @@
-package com.solexgames.mango.cache
+package gg.scala.mango.cache
 
-import com.solexgames.mango.ticketing.extended.ExtendedTicketHandler
-import com.solexgames.mango.ticketing.extended.impl.PunishmentTicketHandler
-import com.solexgames.mango.ticketing.extended.impl.TransactionTicketHandler
+import gg.scala.mango.ticketing.extended.ExtendedTicketHandler
+import gg.scala.mango.ticketing.extended.impl.PunishmentTicketHandler
+import gg.scala.mango.ticketing.extended.impl.TransactionTicketHandler
 
 /**
  * @author GrowlyX

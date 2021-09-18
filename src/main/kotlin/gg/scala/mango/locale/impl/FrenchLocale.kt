@@ -1,7 +1,7 @@
-package com.solexgames.mango.locale.impl
+package gg.scala.mango.locale.impl
 
-import com.solexgames.mango.locale.Locale
-import com.solexgames.mango.ticketing.TicketDataStage
+import gg.scala.mango.locale.Locale
+import gg.scala.mango.ticketing.TicketDataStage
 
 /**
  * @author GrowlyX

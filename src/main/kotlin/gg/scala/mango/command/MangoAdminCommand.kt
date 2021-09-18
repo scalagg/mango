@@ -1,7 +1,7 @@
-package com.solexgames.mango.command
+package gg.scala.mango.command
 
-import com.solexgames.mango.MangoStandaloneApplication
-import com.solexgames.mango.util.MangoUtil.getDefaultEmbed
+import gg.scala.mango.MangoStandaloneApplication
+import gg.scala.mango.util.MangoUtil.getDefaultEmbed
 import io.github.revxrsal.cub.annotation.Command
 import io.github.revxrsal.cub.annotation.Description
 import io.github.revxrsal.cub.annotation.Subcommand

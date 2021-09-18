@@ -1,4 +1,4 @@
-package com.solexgames.mango.locale
+package gg.scala.mango.locale
 
 /**
  * @author GrowlyX

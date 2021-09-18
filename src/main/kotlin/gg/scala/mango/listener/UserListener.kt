@@ -1,6 +1,6 @@
-package com.solexgames.mango.listener
+package gg.scala.mango.listener
 
-import com.solexgames.mango.MangoStandaloneApplication
+import gg.scala.mango.MangoStandaloneApplication
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
