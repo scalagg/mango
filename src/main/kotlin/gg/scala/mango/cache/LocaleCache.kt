@@ -13,7 +13,7 @@ import java.util.function.Predicate
  */
 object LocaleCache {
 
-    private val LOCALES: MutableMap<String, Locale> = mutableMapOf()
+    val LOCALES: MutableMap<String, Locale> = mutableMapOf()
 
     val DEF: EnglishLocale = EnglishLocale()
 

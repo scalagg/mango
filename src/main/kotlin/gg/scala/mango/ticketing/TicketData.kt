@@ -8,11 +8,12 @@ import net.dv8tion.jda.api.entities.TextChannel
  * @since 7/14/2021
  */
 data class TicketData(
-    val metaData: Map<String, String> = mutableMapOf(),
-    val responses: Map<TicketDataStage, String> = mutableMapOf(),
+    val channel: TextChannel? = null
 ) {
-    var channel: TextChannel? = null
-    val locale: Locale? = null
+    val metaData: MutableMap<String, String> = mutableMapOf()
+    val responses: MutableMap<TicketDataStage, String> = mutableMapOf()
 
-    val stage: TicketDataStage = TicketDataStage.FIRST
+    var locale: Locale? = null
+
+    var stage: TicketDataStage? = TicketDataStage.FIRST
 }

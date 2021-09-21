@@ -1,7 +1,14 @@
 package gg.scala.mango.listener
 
 import gg.scala.mango.MangoStandaloneApplication
+import gg.scala.mango.cache.ExtendedTicketCache
+import gg.scala.mango.cache.LocaleCache
+import gg.scala.mango.ticketing.TicketData
+import gg.scala.mango.ticketing.TicketDataStage
+import gg.scala.mango.util.MangoUtil
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent
@@ -9,6 +16,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.awt.Color
+import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 
@@ -19,6 +27,8 @@ import java.util.concurrent.TimeUnit
 object UserListener : ListenerAdapter() {
 
     private val memberCodeMap = hashMapOf<Long, String>()
+    private val questionMessages = hashMapOf<Member, MutableList<Message>>()
+    private val ticketDataMap = hashMapOf<Member, TicketData>()
 
     override fun onPrivateMessageReceived(event: PrivateMessageReceivedEvent) {
         val rawMessage = event.message.contentRaw
@@ -34,7 +44,8 @@ object UserListener : ListenerAdapter() {
                 guild.addRoleToMember(event.author.idLong, role).queue()
                 memberCodeMap.remove(event.author.idLong)
 
-                privateChannel.sendMessage("You've been verified in the **${MangoStandaloneApplication.settings.secondary} Discord**, have fun!").queue()
+                privateChannel.sendMessage("You've been verified in the **${MangoStandaloneApplication.settings.secondary} Discord**, have fun!")
+                    .queue()
             } else {
                 privateChannel.sendMessage("Something went wrong whilst verifying you.").queue()
             }
@@ -43,6 +54,117 @@ object UserListener : ListenerAdapter() {
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         val size = event.message.mentionedUsers.size
+
+        val data = ticketDataMap[event.member]
+
+        if (data != null && event.member != null && event.channel.name == data.channel!!.name) {
+            val stage = data.stage
+
+            if (stage != null && stage.validResponses.isEmpty()) {
+                if (stage === TicketDataStage.LANGUAGE) {
+                    val locale = LocaleCache.id(event.message.contentRaw)
+
+                    if (locale == null) {
+                        event.channel.sendMessage("Not a valid locale, fallbacking to English.")
+                            .queue { message: Message? ->
+                                addDeletingMessage(
+                                    event.member!!, message!!
+                                )
+                            }
+                    } else {
+                        event.channel.sendMessage("You chose the **${locale.id}** language.")
+                            .queue { message: Message? ->
+                                addDeletingMessage(
+                                    event.member!!, message!!
+                                )
+                            }
+                    }
+
+                    addDeletingMessage(event.member!!, event.message)
+
+                    data.locale = locale ?: LocaleCache.DEF
+                } else {
+                    data.responses[stage] = event.message.contentRaw
+
+                    addDeletingMessage(event.member!!, event.message)
+                }
+            } else {
+                if (!stage!!.isValidResponse(event.message.contentRaw)) {
+                    event.channel.sendMessage(
+                        """
+                        **${data.locale!!.get()["invalid-response"]}:**
+                        ${stage.validResponses.joinToString(separator = ", ")}
+                        """.trimIndent()
+                    ).queue { message: Message? ->
+                        addDeletingMessage(
+                            event.member!!, message!!
+                        )
+                    }
+
+                    addDeletingMessage(event.member!!, event.message)
+                    return
+                } else {
+                    data.responses[stage] = event.message.contentRaw
+                    addDeletingMessage(event.member!!, event.message)
+                }
+            }
+
+            data.stage = TicketDataStage.getNext(stage)
+
+            val newStage = data.stage
+
+            if (newStage != null) {
+                data.channel.sendMessage(
+                    data.locale!!.get()[newStage.locale]!!
+                ).queue { message ->
+                    addDeletingMessage(
+                        event.member!!, message
+                    )
+                }
+            } else {
+                val builder: EmbedBuilder = MangoUtil.getDefaultEmbed(
+                    "**Responses**",
+                    "Here are " + event.member!!.asMention + "'s question responses."
+                )
+
+                data.responses.forEach { (ticketDataStage, response) ->
+                    builder.addField(
+                        ticketDataStage.description,
+                        response,
+                        true
+                    )
+                }
+
+                event.channel.sendMessage(builder.build()).queue { it.pin().queue() }
+
+                var ticketManager = event.textChannel.manager.putPermissionOverride(event.member!!, 3072L, 8192L)
+                    .putPermissionOverride(event.guild.getRolesByName("@everyone", true)[0], 0L, 1024L)
+
+                for (supportRole in MangoStandaloneApplication.settings.supportRoles.split(",")) {
+                    if (event.guild.getRolesByName(supportRole, true).isNotEmpty()) {
+                        ticketManager = event.textChannel.manager.putPermissionOverride(
+                            event.guild.getRolesByName(supportRole, true)[0],
+                            listOf(Permission.VIEW_CHANNEL, Permission.MESSAGE_WRITE),
+                            ArrayList()
+                        )
+                    }
+                }
+
+                ticketManager.queue()
+
+                questionMessages[event.member]?.forEach {
+                    it.delete().queue()
+                }
+
+                val whyResponse = data.responses[TicketDataStage.WHY]
+
+                if (whyResponse != null) {
+                    val ticketHandler = ExtendedTicketCache.fetchHandler(whyResponse)
+
+                    ticketHandler?.handle()?.invoke(event.member!!, data)
+                }
+            }
+        }
 
         if (size >= 10) {
             val role = event.guild.getRolesByName("Muted", false)[0]
@@ -67,6 +189,55 @@ object UserListener : ListenerAdapter() {
     }
 
     override fun onButtonClick(event: ButtonClickEvent) {
+        if (event.channel.name == "support") {
+            val suffix = getRandomString(5)
+            val ticketName = "ticket-${event.member!!.user.name}-$suffix"
+
+            if (event.guild!!.getCategoriesByName("\uD83D\uDCD6 Support", true)[0].channels.firstOrNull {
+                    it.name.contains(
+                        event.member!!.user.name.lowercase(Locale.getDefault())
+                    )
+                } != null
+            ) {
+                return
+            }
+
+            val ticket = event.guild!!.createTextChannel(
+                ticketName, event.guild!!.getCategoriesByName("\uD83D\uDCD6 Support", true)[0]
+            ).complete()
+
+            val ticketManager = ticket.manager.putPermissionOverride(event.member!!, 3072L, 8192L)
+                .putPermissionOverride(event.guild!!.getRolesByName("@everyone", true)[0], 0L, 1024L)
+            ticketManager.queue()
+
+            val data = TicketData(ticket)
+
+            ticket.sendMessage(
+                MangoUtil.getDefaultEmbed(
+                    "**Support**",
+                    "Thanks for contacting PvPBar Support! Please answer the questions provided below until one of our support members are available.\n\nCreated By: " + event.member!!
+                        .user.asMention
+                ).build()
+            ).queue()
+
+            ticket.sendMessage(
+                """
+                    **Choose a language:**
+                    ${LocaleCache.LOCALES.values.map { it.id }.joinToString(separator = ", ")}
+                """.trimIndent()
+            ).queue {
+                this.addDeletingMessage(
+                    event.member!!, it
+                )
+            }
+
+            ticket.sendMessage(event.member!!.user.asMention).queue()
+
+            ticketDataMap[event.member!!] = data
+
+            return
+        }
+
         val role = event.guild!!.getRolesByName("Player", false)[0]
         val muted = event.guild!!.getRolesByName("Muted", false)[0]
 
@@ -116,7 +287,20 @@ object UserListener : ListenerAdapter() {
         }
     }
 
-    fun getRandomString(size: Int): String {
+    private fun addDeletingMessage(member: Member, message: Message) {
+        val messages = questionMessages[member]
+
+        if (messages == null) {
+            val messageList: MutableList<Message> = ArrayList()
+            messageList.add(message)
+
+            questionMessages[member] = messageList
+        } else {
+            messages.add(message)
+        }
+    }
+
+    private fun getRandomString(size: Int): String {
         val saltedString = StringBuilder()
 
         while (saltedString.length < size) {
