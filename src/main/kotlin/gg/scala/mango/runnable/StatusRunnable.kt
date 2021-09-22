@@ -21,7 +21,7 @@ object StatusRunnable : Runnable {
     init {
         val file = File("activities.json")
 
-        if (!file.exists()) file.mkdirs()
+        if (!file.exists()) file.createNewFile()
 
         val reader = Files.newReader(
             file, Charsets.UTF_8
