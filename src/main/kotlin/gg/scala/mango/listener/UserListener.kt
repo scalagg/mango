@@ -44,7 +44,7 @@ object UserListener : ListenerAdapter() {
                 guild.addRoleToMember(event.author.idLong, role).queue()
                 memberCodeMap.remove(event.author.idLong)
 
-                privateChannel.sendMessage("You've been verified in the **${MangoStandaloneApplication.settings.secondary} Discord**, have fun!")
+                privateChannel.sendMessage("You've been verified in the **${MangoStandaloneApplication.settings.discordName} Discord**, have fun!")
                     .queue()
             } else {
                 privateChannel.sendMessage("Something went wrong whilst verifying you.").queue()
