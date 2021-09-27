@@ -16,7 +16,9 @@ import io.github.revxrsal.cub.jda.JDACommandHandler
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
+import net.dv8tion.jda.api.requests.GatewayIntent
 import java.io.File
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -46,6 +48,13 @@ object MangoStandaloneApplication {
         )
 
         client = JDABuilder.createDefault(settings.token)
+            .enableIntents(
+                GatewayIntent.GUILD_BANS,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.DIRECT_MESSAGES
+            )
             .addEventListeners(
                 UserListener
             ).build()
@@ -65,8 +74,8 @@ object MangoStandaloneApplication {
                 CloseCommand()
             );
 
-            val executor = Executors.newScheduledThreadPool(1)
-            executor.schedule(StatusRunnable, 5L, TimeUnit.SECONDS)
+            val timer = Timer()
+            timer.schedule(StatusRunnable, 5000L)
         }
     }
 }

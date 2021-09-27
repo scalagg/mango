@@ -7,12 +7,13 @@ import gg.scala.mango.util.MangoStatus
 import net.dv8tion.jda.api.entities.Activity
 import java.io.File
 import java.lang.reflect.Type
+import java.util.*
 
 /**
  * @author GrowlyX
  * @since 9/14/2021
  */
-object StatusRunnable : Runnable {
+object StatusRunnable : TimerTask() {
 
     private val dataType: Type = object : TypeToken<List<MangoStatus>>() {}.type
 
