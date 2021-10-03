@@ -39,7 +39,7 @@ object StatusRunnable : TimerTask() {
         val currentTip = try {
             messages[index++]
         } catch (e: Exception) {
-            messages[0]
+            index = 0; messages[0]
         }
 
         MangoStandaloneApplication.client.presence.activity = Activity.of(
