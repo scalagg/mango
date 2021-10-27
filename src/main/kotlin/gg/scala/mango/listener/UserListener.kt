@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.awt.Color
@@ -166,7 +167,7 @@ object UserListener : ListenerAdapter() {
             }
         }
 
-        if (size >= 10) {
+        if (size >= 7) {
             val role = event.guild.getRolesByName("Muted", false)[0]
             val playerRole = event.guild.getRolesByName("Player", false)[0]
 
@@ -175,7 +176,7 @@ object UserListener : ListenerAdapter() {
             if (role != null && playerRole != null) {
                 event.guild.addRoleToMember(event.member!!, role).queue {
                     event.channel.sendMessage(
-                        event.member!!.asMention + " has been permanently muted for `pinging more than ten users`."
+                        event.member!!.asMention + " has been permanently muted for `pinging more than seven users`."
                     ).queue()
                 }
             }
@@ -188,6 +189,62 @@ object UserListener : ListenerAdapter() {
         channel?.sendMessage(
             "Welcome to the ${MangoStandaloneApplication.settings.discordName} Discord Server, " + event.member.asMention + "! \uD83D\uDC4B"
         )?.queue()
+    }
+
+    override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent)
+    {
+        if (event.channel.name != "verification")
+        {
+            return
+        }
+
+        val role = event.guild.getRolesByName("Player", false)[0]
+        val muted = event.guild.getRolesByName("Muted", false)[0]
+
+        if (role == null || muted == null) {
+            return
+        }
+
+        if (event.member.roles.contains(role) || event.member.roles.contains(muted)) {
+            return
+        }
+
+        if (memberCodeMap.containsKey(event.member.idLong)) {
+            event.channel.sendMessage(event.member.asMention + ", you were sent a message by our bot. Check your direct messages for the code.")
+                .queue { message: Message ->
+                    message.delete().queueAfter(2L, TimeUnit.SECONDS)
+                }
+            return
+        }
+
+        event.member.user.openPrivateChannel().submit().whenComplete { privateChannel, _ ->
+            val generatedCode = getRandomString(10)
+
+            try {
+                privateChannel.sendMessage(
+                    EmbedBuilder()
+                        .setTitle("**Verification**")
+                        .setColor(Color.ORANGE)
+                        .setDescription(
+                            """
+                                Please respond with the following code to verify yourself in our discord server.
+                                
+                                `$generatedCode`
+                            """.trimIndent()
+                        )
+                        .build()
+                ).queue()
+
+                memberCodeMap[event.member.idLong] = generatedCode
+            } catch (ignored: Exception) {
+                event.channel.sendMessage(
+                    event.member
+                        .asMention + ", your private-messages are disabled."
+                ).queue { message: Message ->
+                    message.delete().queueAfter(2L, TimeUnit.SECONDS)
+                }
+            }
+        }
     }
 
     override fun onButtonClick(event: ButtonClickEvent) {
@@ -238,54 +295,6 @@ object UserListener : ListenerAdapter() {
             ticketDataMap[event.member!!] = data
 
             return
-        }
-
-        val role = event.guild!!.getRolesByName("Player", false)[0]
-        val muted = event.guild!!.getRolesByName("Muted", false)[0]
-
-        if (role == null || muted == null) {
-            return
-        }
-
-        if (event.member!!.roles.contains(role) || event.member!!.roles.contains(muted)) {
-            return
-        }
-
-        if (memberCodeMap.containsKey(event.member!!.idLong)) {
-            event.channel.sendMessage(event.member!!.asMention + ", you were sent a message by our bot. Check your direct messages for the code.")
-                .queue { message: Message ->
-                    message.delete().queueAfter(2L, TimeUnit.SECONDS)
-                }
-            return
-        }
-
-        event.member!!.user.openPrivateChannel().submit().whenComplete { privateChannel, _ ->
-            val generatedCode = getRandomString(10)
-
-            try {
-                privateChannel.sendMessage(
-                    EmbedBuilder()
-                        .setTitle("**Verification**")
-                        .setColor(Color.GREEN)
-                        .setDescription(
-                            """
-                                Please reply with the following code to become verified in the ${MangoStandaloneApplication.settings.discordName} Discord Server:
-                                
-                                Verification Code: `$generatedCode`
-                            """.trimIndent()
-                        )
-                        .build()
-                ).queue()
-
-                memberCodeMap[event.member!!.idLong] = generatedCode
-            } catch (ignored: Exception) {
-                event.channel.sendMessage(
-                    event.member!!
-                        .asMention + ", your messages are disabled."
-                ).queue { message: Message ->
-                    message.delete().queueAfter(2L, TimeUnit.SECONDS)
-                }
-            }
         }
     }
 
