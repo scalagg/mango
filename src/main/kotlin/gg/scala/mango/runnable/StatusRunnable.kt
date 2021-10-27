@@ -13,7 +13,7 @@ import java.util.*
  * @author GrowlyX
  * @since 9/14/2021
  */
-object StatusRunnable : TimerTask() {
+object StatusRunnable : Thread() {
 
     private val dataType: Type = object : TypeToken<List<MangoStatus>>() {}.type
 
@@ -36,14 +36,31 @@ object StatusRunnable : TimerTask() {
     private var index = -1
 
     override fun run() {
-        val currentTip = try {
-            messages[index++]
-        } catch (e: Exception) {
-            index = 0; messages[0]
-        }
+        while (true)
+        {
+            try
+            {
+                val currentTip = try {
+                    messages[index++]
+                } catch (e: Exception) {
+                    index = 0; messages[0]
+                }
 
-        MangoStandaloneApplication.client.presence.activity = Activity.of(
-            currentTip.activityType, currentTip.value
-        )
+                MangoStandaloneApplication.client.presence.activity = Activity.of(
+                    currentTip.activityType, currentTip.value
+                )
+            } catch (exception: Exception)
+            {
+                exception.printStackTrace()
+            }
+
+            try
+            {
+                sleep(5000L)
+            } catch (exception: Exception)
+            {
+                exception.printStackTrace()
+            }
+        }
     }
 }

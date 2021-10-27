@@ -72,10 +72,9 @@ object MangoStandaloneApplication {
             commandHandler.registerCommand(
                 MangoAdminCommand(),
                 CloseCommand()
-            );
+            )
 
-            val timer = Timer()
-            timer.schedule(StatusRunnable, 5000L)
+            StatusRunnable.start()
         }
     }
 }
