@@ -9,6 +9,7 @@ import gg.scala.mango.listener.UserListener
 import com.xenomachina.argparser.ArgParser
 import gg.scala.mango.cache.ExtendedTicketCache
 import gg.scala.mango.cache.LocaleCache
+import gg.scala.mango.command.AnnounceCommand
 import gg.scala.mango.command.CloseCommand
 import gg.scala.mango.runnable.StatusRunnable
 import gg.scala.mango.util.MangoStatus
@@ -71,7 +72,8 @@ object MangoStandaloneApplication {
 
             commandHandler.registerCommand(
                 MangoAdminCommand(),
-                CloseCommand()
+                CloseCommand(),
+                AnnounceCommand()
             )
 
             StatusRunnable.start()

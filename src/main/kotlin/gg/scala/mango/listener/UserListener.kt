@@ -90,7 +90,12 @@ object UserListener : ListenerAdapter() {
                     addDeletingMessage(event.member!!, event.message)
                 }
             } else {
-                if (!stage!!.isValidResponse(event.message.contentRaw)) {
+                if (stage == null)
+                {
+                    return
+                }
+
+                if (!stage.isValidResponse(event.message.contentRaw)) {
                     event.channel.sendMessage(
                         """
                         **${data.locale!!.get()["invalid-response"]}:**
@@ -282,7 +287,7 @@ object UserListener : ListenerAdapter() {
             ticket.sendMessage(
                 """
                     **Choose a language:**
-                    ${LocaleCache.LOCALES.values.map { it.id }.joinToString(separator = ", ")}
+                    ${LocaleCache.LOCALES.values.joinToString(separator = ", ") { it.id }}
                 """.trimIndent()
             ).queue {
                 this.addDeletingMessage(
