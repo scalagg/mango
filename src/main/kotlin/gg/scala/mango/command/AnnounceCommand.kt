@@ -2,10 +2,13 @@ package gg.scala.mango.command
 
 import gg.scala.mango.util.MangoUtil.getDefaultEmbed
 import io.github.revxrsal.cub.annotation.Command
+import io.github.revxrsal.cub.annotation.Cooldown
 import io.github.revxrsal.cub.jda.JDACommandSubject
 import io.github.revxrsal.cub.jda.annotation.RolePermission
 import net.dv8tion.jda.api.EmbedBuilder
 import java.awt.Color
+import java.time.Instant
+import java.time.temporal.TemporalAccessor
 import java.util.concurrent.TimeUnit
 
 
@@ -23,13 +26,18 @@ class AnnounceCommand {
         "announcement",
         aliases = ["announce"]
     )
+    @Cooldown(
+        value = 5L,
+        unit = TimeUnit.SECONDS
+    )
     fun onTicketPanel(context: JDACommandSubject, message: String) {
         val broadcast = message.endsWith(" -a")
 
         val embedBuilder = EmbedBuilder()
-        embedBuilder.setColor(Color.CYAN)
+        embedBuilder.setColor(Color.decode("#f3c513"))
         embedBuilder.setTitle("Announcement")
         embedBuilder.setFooter(context.asMember().effectiveName, context.asUser().avatarUrl)
+        embedBuilder.setTimestamp(Instant.now())
         embedBuilder.setDescription("${
             if (broadcast)
             {

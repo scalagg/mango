@@ -1,6 +1,7 @@
 package gg.scala.mango.command
 
 import io.github.revxrsal.cub.annotation.Command
+import io.github.revxrsal.cub.annotation.Cooldown
 import io.github.revxrsal.cub.annotation.Description
 import io.github.revxrsal.cub.jda.JDACommandSubject
 import java.util.concurrent.TimeUnit
@@ -11,8 +12,12 @@ import java.util.concurrent.TimeUnit
  */
 class CloseCommand {
 
-    @Command("close")
+    @Command("close|ticket close")
     @Description("Dispatches the ticket creation panel.")
+    @Cooldown(
+        value = 5L,
+        unit = TimeUnit.SECONDS
+    )
     fun onClose(context: JDACommandSubject) {
         if (!context.parentEvent.channel.name.startsWith("ticket-")) {
             context.parentEvent.channel.sendMessage("This is not a ticket channel.").queue {
