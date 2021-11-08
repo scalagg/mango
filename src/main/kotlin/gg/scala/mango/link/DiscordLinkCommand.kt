@@ -68,6 +68,8 @@ object DiscordLinkCommand
                     }#${
                         context.asUser().discriminator
                     }")
+
+                    DiscordLinkHandler.codes.deleteEntry(it.toString())
                 }
             }
         }
