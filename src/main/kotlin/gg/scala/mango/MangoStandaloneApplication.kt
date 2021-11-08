@@ -6,22 +6,18 @@ import com.google.gson.GsonBuilder
 import com.google.gson.LongSerializationPolicy
 import gg.scala.mango.command.MangoAdminCommand
 import gg.scala.mango.listener.UserListener
-import com.xenomachina.argparser.ArgParser
-import gg.scala.mango.cache.ExtendedTicketCache
 import gg.scala.mango.cache.LocaleCache
 import gg.scala.mango.command.AnnounceCommand
 import gg.scala.mango.command.CloseCommand
+import gg.scala.mango.command.ReactionRolesCommand
+import gg.scala.mango.link.DiscordLinkCommand
+import gg.scala.mango.link.DiscordLinkHandler
 import gg.scala.mango.runnable.StatusRunnable
-import gg.scala.mango.util.MangoStatus
 import io.github.revxrsal.cub.jda.JDACommandHandler
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
-import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import java.io.File
-import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 /**
  * @author GrowlyX
@@ -57,10 +53,13 @@ object MangoStandaloneApplication {
                 GatewayIntent.DIRECT_MESSAGES
             )
             .addEventListeners(
-                UserListener
+                UserListener,
+                ReactionRolesCommand,
+                MangoAdminCommand
             ).build()
 
-        LocaleCache.init()
+        LocaleCache.initialLoad()
+        DiscordLinkHandler.initialLoad()
 
         client.awaitReady().let {
             commandHandler = JDACommandHandler.create(
@@ -71,9 +70,11 @@ object MangoStandaloneApplication {
             )
 
             commandHandler.registerCommand(
-                MangoAdminCommand(),
+                MangoAdminCommand,
                 CloseCommand(),
-                AnnounceCommand()
+                AnnounceCommand(),
+                ReactionRolesCommand,
+                DiscordLinkCommand
             )
 
             StatusRunnable.start()

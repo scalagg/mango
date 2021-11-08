@@ -13,11 +13,13 @@ import java.util.function.Predicate
  */
 object LocaleCache {
 
+    @JvmStatic
     val LOCALES: MutableMap<String, Locale> = mutableMapOf()
 
+    @JvmStatic
     val DEF: EnglishLocale = EnglishLocale()
 
-    fun init() {
+    fun initialLoad() {
         listOf(DEF, ItalianLocale(), SpanishLocale(), FrenchLocale()).forEach {
             it.init(); LOCALES[it.id] = it
         }

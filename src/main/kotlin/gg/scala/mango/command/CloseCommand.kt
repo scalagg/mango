@@ -12,7 +12,13 @@ import java.util.concurrent.TimeUnit
  */
 class CloseCommand {
 
-    @Command("close|ticket close")
+    @Command(
+        "close",
+        aliases = [
+            "ticket close",
+            "closeticket"
+        ]
+    )
     @Description("Dispatches the ticket creation panel.")
     @Cooldown(
         value = 5L,

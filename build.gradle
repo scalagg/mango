@@ -1,10 +1,10 @@
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
     id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
-group 'com.solexgames'
+group 'cgg.scala'
 version '1.0-SNAPSHOT'
 
 mainClassName = 'gg.scala.mango.MangoStandaloneApplication'
@@ -17,14 +17,16 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
     implementation "net.dv8tion:JDA:4.3.0_324"
     implementation 'com.github.ReflxctionDev:cub:1.8.1'
 
     implementation 'com.xenomachina:kotlin-argparser:2.0.7'
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.code.gson:gson:2.8.9'
 
-    implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'com.google.guava:guava:31.0.1-jre'
+
+    implementation fileTree("lib")
 }
 
 compileKotlin {
