@@ -12,6 +12,7 @@ import gg.scala.mango.command.CloseCommand
 import gg.scala.mango.command.ReactionRolesCommand
 import gg.scala.mango.link.DiscordLinkCommand
 import gg.scala.mango.link.DiscordLinkHandler
+import gg.scala.mango.runnable.DisplayNameUpdater
 import gg.scala.mango.runnable.StatusRunnable
 import io.github.revxrsal.cub.jda.JDACommandHandler
 import net.dv8tion.jda.api.JDA
@@ -78,6 +79,7 @@ object MangoStandaloneApplication {
             )
 
             StatusRunnable.start()
+            DisplayNameUpdater.start()
         }
     }
 }
