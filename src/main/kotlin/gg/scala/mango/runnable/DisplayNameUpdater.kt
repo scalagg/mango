@@ -1,6 +1,7 @@
 package gg.scala.mango.runnable
 
 import gg.scala.mango.MangoStandaloneApplication
+import kotlin.properties.Delegates
 
 /**
  * @author GrowlyX
