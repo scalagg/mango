@@ -193,6 +193,63 @@ object MangoAdminCommand : ListenerAdapter()
                 event.deferReply().setEphemeral(true)
                     .addEmbeds(embed.build()).queue()
             }
+            "guidelines" ->
+            {
+                val embed = EmbedBuilder()
+                embed.setColor(Color.decode("#2f3136"))
+                embed.setFooter(
+                    "PvPBar Network · Information Page",
+                    "https://cdn.discordapp.com/attachments/906652259327291422/906922061480493066/logo.png"
+                )
+                embed.setTitle("Our Guidelines")
+
+                embed.setDescription(
+                    """
+                        Hey! You can view our server guidelines in this channel. Scroll up!
+                    """.trimIndent()
+                )
+
+                event.deferReply().setEphemeral(true)
+                    .addEmbeds(embed.build()).queue()
+            }
+            "socials" ->
+            {
+                val embed = EmbedBuilder()
+                embed.setColor(Color.decode("#2f3136"))
+                embed.setFooter(
+                    "PvPBar Network · Information Page",
+                    "https://cdn.discordapp.com/attachments/906652259327291422/906922061480493066/logo.png"
+                )
+                embed.setTitle("Our Socials")
+
+                embed.setDescription(
+                    """
+                        > Twitter - `@PvPBarMC`
+                    """.trimIndent()
+                )
+
+                event.deferReply().setEphemeral(true)
+                    .addEmbeds(embed.build()).queue()
+            }
+            "faq" ->
+            {
+                val embed = EmbedBuilder()
+                embed.setColor(Color.decode("#2f3136"))
+                embed.setFooter(
+                    "PvPBar Network · Information Page",
+                    "https://cdn.discordapp.com/attachments/906652259327291422/906922061480493066/logo.png"
+                )
+                embed.setTitle("FAQs")
+
+                embed.setDescription(
+                    """
+                        Frequently Asked Questions is coming very soon!
+                    """.trimIndent()
+                )
+
+                event.deferReply().setEphemeral(true)
+                    .addEmbeds(embed.build()).queue()
+            }
         }
     }
 
