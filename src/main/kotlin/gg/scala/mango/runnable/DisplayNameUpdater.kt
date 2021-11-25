@@ -26,40 +26,39 @@ object DisplayNameUpdater : Thread()
 
     override fun run()
     {
-        try
-        {
-            val guild = client.getGuildById(883838987901468742L)!!
-            val members = guild.loadMembers().get()
+        val guild = client.getGuildById(883838987901468742L)!!
+        val members = guild.loadMembers().get()
 
-            for (member in members)
+        for (member in members)
+        {
+            val displayRole = member.roles
+                .maxByOrNull { it.positionRaw } ?: continue
+
+            if (displayRole == guild.publicRole)
             {
-                val displayRole = member.roles
-                    .maxByOrNull { it.positionRaw } ?: continue
-
-                if (displayRole == guild.publicRole)
-                {
-                    continue
-                }
-
-                if (exempt.contains(displayRole.idLong))
-                {
-                    continue
-                }
-
-                val formatted = "[${
-                    mappings[displayRole.idLong] ?: displayRole.name
-                }] ${member.user.name}"
-
-                if (member.effectiveName == formatted)
-                {
-                    continue
-                }
-
-                member.modifyNickname(formatted).queue()
+                continue
             }
-        } catch (exception: Exception)
-        {
-            exception.printStackTrace()
+
+            if (exempt.contains(displayRole.idLong))
+            {
+                continue
+            }
+
+            val formatted = "[${
+                mappings[displayRole.idLong] ?: displayRole.name
+            }] ${member.user.name}"
+
+            if (member.effectiveName == formatted)
+            {
+                continue
+            }
+
+            try
+            {
+                member.modifyNickname(formatted).queue()
+            } catch (ignored: Exception)
+            {
+            }
         }
 
         try
