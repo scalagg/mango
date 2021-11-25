@@ -7,7 +7,6 @@ import gg.scala.mango.util.MangoStatus
 import net.dv8tion.jda.api.entities.Activity
 import java.io.File
 import java.lang.reflect.Type
-import java.util.*
 
 /**
  * @author GrowlyX
@@ -56,7 +55,7 @@ object StatusRunnable : Thread() {
 
             try
             {
-                sleep(5000L)
+                sleep(10000L)
             } catch (exception: Exception)
             {
                 exception.printStackTrace()
