@@ -4,12 +4,9 @@ import com.google.common.io.Files
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.LongSerializationPolicy
-import gg.scala.mango.command.MangoAdminCommand
 import gg.scala.mango.listener.UserListener
 import gg.scala.mango.cache.LocaleCache
-import gg.scala.mango.command.AnnounceCommand
-import gg.scala.mango.command.CloseCommand
-import gg.scala.mango.command.ReactionRolesCommand
+import gg.scala.mango.command.*
 import gg.scala.mango.link.DiscordLinkCommand
 import gg.scala.mango.link.DiscordLinkHandler
 import gg.scala.mango.runnable.DisplayNameUpdater
@@ -75,7 +72,8 @@ object MangoStandaloneApplication {
                 CloseCommand(),
                 AnnounceCommand(),
                 ReactionRolesCommand,
-                DiscordLinkCommand
+                DiscordLinkCommand,
+                PunishmentCommand
             )
 
             StatusRunnable.start()
