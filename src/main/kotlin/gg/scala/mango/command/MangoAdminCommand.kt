@@ -1,5 +1,6 @@
 package gg.scala.mango.command
 
+import gg.scala.mango.listener.UserListener
 import io.github.revxrsal.cub.annotation.Command
 import io.github.revxrsal.cub.annotation.Description
 import io.github.revxrsal.cub.annotation.Subcommand
@@ -251,6 +252,17 @@ object MangoAdminCommand : ListenerAdapter()
                     .addEmbeds(embed.build()).queue()
             }
         }
+    }
+
+    @RolePermission(
+        names = ["Owner"]
+    )
+    @Subcommand("kicknow")
+    fun onKickNow(context: JDACommandSubject)
+    {
+        UserListener.kickNow = !UserListener.kickNow
+
+        context.parentEvent.channel.sendMessage("toggled kicknaow")
     }
 
     @RolePermission(

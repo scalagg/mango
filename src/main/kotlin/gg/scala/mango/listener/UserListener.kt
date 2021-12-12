@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit
  */
 object UserListener : ListenerAdapter()
 {
+    var kickNow = false
 
     private val memberCodeMap = hashMapOf<Long, String>()
     private val questionMessages = hashMapOf<Member, MutableList<Message>>()
@@ -214,9 +215,16 @@ object UserListener : ListenerAdapter()
     {
         val channel = event.guild.getTextChannelsByName("arrivals", true)[0]
 
-        channel?.sendMessage(
-            "Welcome to the ${MangoStandaloneApplication.settings.discordName} Discord Server, " + event.member.asMention + "! \uD83D\uDC4B"
-        )?.queue()
+
+        if (kickNow)
+        {
+            event.member.kick("Kick Now - Mango")
+        } else
+        {
+            channel?.sendMessage(
+                "Welcome to the ${MangoStandaloneApplication.settings.discordName} Discord Server, " + event.member.asMention + "! \uD83D\uDC4B"
+            )?.queue()
+        }
     }
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent)
