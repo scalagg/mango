@@ -26,7 +26,7 @@ dependencies {
 
     implementation 'com.google.guava:guava:31.0.1-jre'
 
-    implementation fileTree("lib")
+    implementation 'com.github.GrowlyX:data-store:0249e4d2a5'
 }
 
 compileKotlin {

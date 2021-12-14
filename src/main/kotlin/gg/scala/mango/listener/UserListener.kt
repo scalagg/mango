@@ -377,4 +377,3 @@ object UserListener : ListenerAdapter()
 
         return saltedString.toString()
     }
-}
