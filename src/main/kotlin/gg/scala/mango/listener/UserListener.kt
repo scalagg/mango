@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.awt.Color
 import java.util.*
+import java.util.concurrent.Executors
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 
@@ -215,10 +216,12 @@ object UserListener : ListenerAdapter()
     {
         val channel = event.guild.getTextChannelsByName("arrivals", true)[0]
 
-
         if (kickNow)
         {
             event.member.kick("Kick Now - Mango")
+                .queueAfter(500L, TimeUnit.MILLISECONDS)
+
+            println("Attempting to kick member: ${event.member.effectiveName}")
         } else
         {
             channel?.sendMessage(
@@ -377,3 +380,4 @@ object UserListener : ListenerAdapter()
 
         return saltedString.toString()
     }
+}

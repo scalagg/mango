@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.components.Button
 import net.dv8tion.jda.api.interactions.components.ButtonStyle
 import java.awt.Color
+import java.util.concurrent.TimeUnit
 
 /**
  * @author GrowlyX
@@ -255,14 +256,18 @@ object MangoAdminCommand : ListenerAdapter()
     }
 
     @RolePermission(
-        names = ["Owner"]
+        names = ["*"]
     )
     @Subcommand("kicknow")
     fun onKickNow(context: JDACommandSubject)
     {
         UserListener.kickNow = !UserListener.kickNow
 
-        context.parentEvent.channel.sendMessage("toggled kicknaow")
+        context.parentEvent.channel
+            .sendMessage("Kick now's status is now: ${UserListener.kickNow}")
+            .queue {
+                it.delete().queueAfter(5L, TimeUnit.SECONDS)
+            }
     }
 
     @RolePermission(
