@@ -1,10 +1,10 @@
 plugins {
     id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.6.0'
-    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-group 'cgg.scala'
+group 'gg.scala.mango'
 version '1.0-SNAPSHOT'
 
 mainClassName = 'gg.scala.mango.MangoStandaloneApplication'
